@@ -1,7 +1,11 @@
 name: "Publish new release"
 
 on:
+
+  pull_request_target:
+
   pull_request:
+
     branches:
       - main
     types:
@@ -19,12 +23,20 @@ jobs:
           BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
           VERSION=${BRANCH_NAME#release/}
           echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
+
+      # - name: Extract version from branch name (for hotfix branches)
+      #   if: startsWith(github.event.pull_request.head.ref, 'hotfix/')
+      #   run: |
+      #     BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+      #     VERSION=${BRANCH_NAME#hotfix/}
+      #     echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
       - name: Extract version from branch name (for hotfix branches)
         if: startsWith(github.event.pull_request.head.ref, 'hotfix/')
         run: |
           BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
           VERSION=${BRANCH_NAME#hotfix/}
           echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
+
       - name: Create Release
         uses: thomaseizinger/create-release@1.0.0
         env:
@@ -36,14 +48,3 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Merge main into test branch
-        uses: thomaseizinger/create-pull-request@1.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-        with:
-          head: main
-          base: test
-          title: Merge main into test branch
-          body: |
-            This PR merges the main branch back into dev.
-            This happens to ensure that the updates that happend on the release branch,are also present on the dev branch.

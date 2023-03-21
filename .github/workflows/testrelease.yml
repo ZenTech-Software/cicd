@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline for new release
 
 on:
   pull_request:
@@ -16,9 +16,9 @@ jobs:
       - name: Extract version from branch name (for release branches)
         if: startsWith(github.event.pull_request.head.ref, 'release/')
         run: |
-          tag=${{ github.ref }}
+          tag="${{ (github.event.pull_request.head.ref }}"
           version=${tag#release-}
-          echo "::set-output name=version::$version"
+          echo "release_version=$version"
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -28,7 +28,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         with:
-          tag_name: ${{ steps.extract_version.outputs.version }}
-          name: ${{ steps.extract_version.outputs.version }}
+          tag_name: ${{ steps.release_version }}
+          name: ${{ steps.release_version }}
           draft: false
           prerelease: false

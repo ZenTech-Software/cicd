@@ -6,8 +6,8 @@ on:
       - main
       - master
     types:
-      - closed
-  workflow_dispatch:   
+      - closed 
+
 
 jobs:
   publish-release:

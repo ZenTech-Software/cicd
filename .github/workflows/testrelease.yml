@@ -7,8 +7,6 @@ on:
       - master
     types:
       - closed 
-
-
 jobs:
   publish-release:
     runs-on: ubuntu-latest

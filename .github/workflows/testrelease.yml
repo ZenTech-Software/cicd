@@ -16,7 +16,7 @@ jobs:
       - name: Extract version from branch name (for release branches)
         if: startsWith(github.event.pull_request.head.ref, 'release/')
         run: |
-          tag="${{ (github.event.pull_request.head.ref }}"
+          tag="${{ github.event.pull_request.head.ref }}"
           version=${tag#release-}
           echo "release_version=$version"
 

@@ -18,7 +18,7 @@ jobs:
         run: |
           tag="${{ github.event.pull_request.head.ref }}"
           version=${tag#release-}
-          echo "release_version=$version"
+          echo "release_version=$version" >> $GITHUB_ENV
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -28,7 +28,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         with:
-          tag_name: ${{ steps.release_version }}
-          name: ${{ steps.release_version }}
+          tag_name: ${{ env.release_version }}
+          name: ${{ env.release_version }}
           draft: false
           prerelease: false
